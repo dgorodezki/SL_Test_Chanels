@@ -18,7 +18,7 @@ struct TTY {
 
   virtual void Write(const float& data);
 
-  virtual void Write(const float data[4]);
+  virtual void Write(const float data[]);
 
   HANDLE m_Handle;
 };

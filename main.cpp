@@ -9,31 +9,33 @@
 
 #include "tty.h"
 using namespace std;
-#define SAMPLE_RATE 48000
-#define CHANNELS 4
-#define BUFFER_SIZE 8
+
+#define CHANNELS 5
+#define BUFFER_SIZE 4
+
+#define M_PI (3.14159265)
+#define TABLE_SIZE (100)
 
 int main() {
   TTY tty;
   char port_name[32];
   sprintf_s(port_name, "\\\\.\\COM%d", 7);
-
   tty.Connect(port_name, 9600);
 
-  std::vector<float> data(BUFFER_SIZE * CHANNELS);
-
-  for (int i = 0; i < BUFFER_SIZE * CHANNELS; i += 4) {
-    float sample =
-        (float)sin(((double)i / (double)BUFFER_SIZE * CHANNELS) * 3.14 * 2.);
-    //sample = 1;
-    data[i] = sample;
-    data[i + 1] = sample;
-    data[i + 2] = sample;
-    data[i + 3] = sample;
+  float sine[TABLE_SIZE]{};
+  int sample_phase = 0;
+  for (int i = 0; i < TABLE_SIZE; i++) {
+    sine[i] = (float)sin(((double)i / (double)TABLE_SIZE) * M_PI * 2.);
   }
 
-  for (int i = 0; i < BUFFER_SIZE * CHANNELS; ) {
-    float out_data[4] = {data[i++], data[i++], data[i++], data[i++]};
+  while (1) {
+    float out_data[CHANNELS]{};
+    for (int i = 0; i < CHANNELS; ++i) {
+      //out_data[i] = sine[sample_phase];
+      out_data[i] = 1;
+    }
+    sample_phase += 1;
+    if (sample_phase >= TABLE_SIZE) sample_phase -= TABLE_SIZE;
     tty.Write(out_data);
   }
 

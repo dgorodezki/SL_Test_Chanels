@@ -93,17 +93,13 @@ void TTY::Write(const float& data) {
   }
 }
 
-void TTY::Write(const float data[4]) {
+void TTY::Write(const float data[]) {
   if (m_Handle == INVALID_HANDLE_VALUE) {
     throw TTYException();
   }
 
-  char buffer[sizeof(float) * 4 /*+ 1*/];
-  memcpy(buffer, &data[0], sizeof(float) * 4);
-  // buffer[sizeof(float) * 4] = '\n';
-
   DWORD feedback;
-  if (!WriteFile(m_Handle, buffer, sizeof(buffer), &feedback, 0)) {
+  if (!WriteFile(m_Handle, data, sizeof(float) * 5, &feedback, 0)) {
     CloseHandle(m_Handle);
     m_Handle = INVALID_HANDLE_VALUE;
     throw TTYException();
